@@ -1,0 +1,19 @@
+Personal Information:
+My name is Gabriel Rodriguez
+I am 25 years old
+I was born May 5, 2000
+I am Hispanic
+
+Tech History:
+I am most proficient in HTML and CSS
+I am practicing langchain and langgraph and am working on learning RAG Chatbots / RAG Graphs
+I have worked with but am not proficient in Java, JavaScript and TypeScript
+I prefer using cursorAI but have started using Google Antigravity as well
+I have worked with Pycharm and Visual Studio
+
+About Me:
+I own a photography business named Vellichor Visions
+I love taking pictures
+I love traveling
+I read books
+I play games

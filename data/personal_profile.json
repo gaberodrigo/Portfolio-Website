@@ -1,0 +1,65 @@
+{
+  "name": "Gabriel Rodriguez",
+  "headline": "Computer Science Student | AI & Web Developer",
+  "location": "United States",
+  "summary": [
+    "I build AI-powered and full-stack web applications with a focus on practical user value.",
+    "My projects combine backend APIs, retrieval systems, and clean frontend interfaces."
+  ],
+  "education": [
+    {
+      "institution": "University / College Name",
+      "degree": "B.S. Computer Science",
+      "status": "In Progress",
+      "highlights": [
+        "Software engineering fundamentals",
+        "Data structures and algorithms",
+        "Applied AI development"
+      ]
+    }
+  ],
+  "work_experience": [
+    {
+      "role": "AI and Full-Stack Developer (Projects)",
+      "organization": "Personal and Academic Projects",
+      "period": "Recent",
+      "achievements": [
+        "Built a RAG chatbot with a FastAPI backend and chat UI integration.",
+        "Developed responsive portfolio experiences to present technical work to recruiters.",
+        "Applied retrieval, chunking, and context-grounded answer generation in production-style code."
+      ]
+    }
+  ],
+  "skills": {
+    "languages": ["Python", "JavaScript", "HTML", "CSS", "Java", "C#"],
+    "ai_llm": ["RAG", "Embeddings", "Prompt Engineering"],
+    "frameworks_tools": ["FastAPI", "Git", "Chroma", "CursorAI", "ClaudeCode"]
+  },
+  "projects": [
+    {
+      "name": "RAG Chatbot Assistant",
+      "description": "A chatbot that retrieves relevant context from indexed content before generating answers.",
+      "stack": ["Python", "FastAPI", "Chroma", "JavaScript"],
+      "features": [
+        "Document ingestion and chunk indexing",
+        "Semantic retrieval with citations",
+        "Grounded response generation"
+      ]
+    },
+    {
+      "name": "Portfolio Website",
+      "description": "A modern portfolio that showcases projects, skills, and a live AI chatbot demo.",
+      "stack": ["HTML", "CSS", "JavaScript", "FastAPI"],
+      "features": [
+        "Responsive design",
+        "Interactive chat interface",
+        "Full-stack AI integration"
+      ]
+    }
+  ],
+  "contact": {
+    "email": "your-email@example.com",
+    "linkedin": "https://www.linkedin.com/in/your-profile",
+    "github": "https://github.com/your-username"
+  }
+}

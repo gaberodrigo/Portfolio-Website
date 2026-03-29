@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Portfolio of Gabriel Rodriguez, Computer Science Student building AI-powered and full-stack web applications."
+    />
+    <title>Gabriel Rodriguez | AI & Web Developer</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="./script.js" defer></script>
+  </head>
+  <body>
+    <header class="site-header" id="home">
+      <div class="container">
+        <a class="brand" href="#home">Gabriel Rodriguez</a>
+        <nav class="main-nav" aria-label="Main navigation">
+          <ul>
+            <li><a href="#about">About</a></li>
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#chatbot">Chatbot</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="section hero" aria-labelledby="hero-title">
+        <div class="container">
+          <p class="eyebrow">Computer Science Student | AI & Web Developer</p>
+          <h1 id="hero-title">Building AI-powered tools that solve real problems</h1>
+          <p>
+            I design and build practical full-stack applications, including retrieval-augmented
+            generation systems that make complex information easy to access.
+          </p>
+          <div class="cta-group">
+            <a class="button" href="#projects">View Projects</a>
+            <a class="button button-secondary" href="#chatbot">Try Chatbot</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="about" aria-labelledby="about-title">
+        <div class="container">
+          <h2 class="section-title" id="about-title">About</h2>
+          <p>
+            I am a developer focused on AI integration and web engineering. My work centers on
+            building reliable software that combines thoughtful UX with practical backend systems.
+          </p>
+          <p>
+            I enjoy working on machine learning applications, modern web development, and
+            end-to-end problem-solving across frontend and backend.
+          </p>
+        </div>
+      </section>
+
+      <section class="section" id="skills" aria-labelledby="skills-title">
+        <div class="container">
+          <h2 class="section-title" id="skills-title">Skills</h2>
+          <div class="skills-grid">
+            <article class="card">
+              <h3>Languages</h3>
+              <ul>
+                <li>Python</li>
+                <li>HTML</li>
+                <li>CSS</li>
+                <li>JavaScript</li>
+                <li>Java</li>
+                <li>C#</li>
+              </ul>
+            </article>
+
+            <article class="card">
+              <h3>AI / LLM</h3>
+              <ul>
+                <li>Retrieval-Augmented Generation (RAG)</li>
+                <li>Embeddings</li>
+                <li>Prompt Engineering (Learning)</li>
+              </ul>
+            </article>
+
+            <article class="card">
+              <h3>Tools</h3>
+              <ul>
+                <li>CursorAI</li>
+                <li>ClaudeCode</li>
+                <li>Git</li>
+              </ul>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="projects" aria-labelledby="projects-title">
+        <div class="container">
+          <h2 class="section-title" id="projects-title">Projects</h2>
+          <div class="projects-grid">
+            <article class="card project-card">
+              <h3>RAG Chatbot Assistant</h3>
+              <p>AI chatbot that answers questions using retrieved context from custom documents.</p>
+              <p><strong>Tech Stack:</strong> FastAPI, Python, Vector Store, JavaScript</p>
+              <ul>
+                <li>Semantic retrieval pipeline with relevant context injection</li>
+                <li>API-driven chat endpoint for real-time responses</li>
+                <li>Focused on concise and trustworthy outputs</li>
+              </ul>
+              <p><a href="#" target="_blank" rel="noopener noreferrer">GitHub (Placeholder)</a></p>
+            </article>
+
+            <article class="card project-card">
+              <h3>Portfolio Website</h3>
+              <p>Professional personal site to showcase projects, technical strengths, and demos.</p>
+              <p><strong>Tech Stack:</strong> HTML, CSS, JavaScript</p>
+              <ul>
+                <li>Responsive multi-section architecture</li>
+                <li>Dedicated chatbot demo integration section</li>
+                <li>Recruiter-focused copy and UX flow</li>
+              </ul>
+              <p><a href="#" target="_blank" rel="noopener noreferrer">GitHub (Placeholder)</a></p>
+            </article>
+
+            <article class="card project-card">
+              <h3>Project Placeholder</h3>
+              <p>Add another strong project demonstrating backend systems or data-driven features.</p>
+              <p><strong>Tech Stack:</strong> Add your stack here</p>
+              <ul>
+                <li>Key feature one</li>
+                <li>Key feature two</li>
+                <li>Key feature three</li>
+              </ul>
+              <p><a href="#" target="_blank" rel="noopener noreferrer">GitHub (Placeholder)</a></p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="chatbot" aria-labelledby="chatbot-title">
+        <div class="container">
+          <h2 class="section-title" id="chatbot-title">Chatbot Demo</h2>
+          <p>Ask questions about AI, development, or project details directly in this demo.</p>
+
+          <div class="chatbot card">
+            <div class="chat-messages" id="chatMessages" aria-live="polite" aria-atomic="false">
+              <article class="chat-message assistant">
+                <p>Hello! I am a RAG chatbot built by Gabe. Ask me anything about this portfolio or him.</p>
+              </article>
+            </div>
+
+            <div class="chat-status" aria-live="polite">
+              <p id="chatLoadingMessage" hidden>Generating response...</p>
+              <p id="chatErrorMessage" hidden>Something went wrong. Please try again.</p>
+            </div>
+
+            <form class="chat-input-form" id="chatForm">
+              <label for="chatInput">Type your message</label>
+              <div class="chat-input-row">
+                <input
+                  id="chatInput"
+                  name="query"
+                  type="text"
+                  placeholder="Ask a question about my work..."
+                  autocomplete="off"
+                  required
+                />
+                <button type="submit">Send</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="contact" aria-labelledby="contact-title">
+        <div class="container">
+          <h2 class="section-title" id="contact-title">Contact</h2>
+          <p>Email: <a href="mailto:your-email@example.com">your-email@example.com</a></p>
+          <p>
+            LinkedIn:
+            <a href="#" target="_blank" rel="noopener noreferrer">LinkedIn Profile</a>
+          </p>
+          <p>
+            GitHub:
+            <a href="#" target="_blank" rel="noopener noreferrer">GitHub Profile</a>
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p>Built to showcase AI-powered products, full-stack development, and clean user-focused design.</p>
+      </div>
+    </footer>
+  </body>
+</html>

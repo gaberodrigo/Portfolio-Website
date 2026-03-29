@@ -1,0 +1,60 @@
+/* Dotted overlay on article preview images; clears on card hover. */
+
+.imageWrap {
+  position: relative;
+  cursor: crosshair;
+}
+
+.imageWrap::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  backdrop-filter: blur(1px) brightness(1.2) contrast(0.8);
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  opacity: 1;
+}
+
+.articleCard:hover .imageWrap::before {
+  opacity: 0;
+}
+
+/* dots1 — sparse grid */
+.imageWrap.dots1::before {
+  background: radial-gradient(circle, rgb(255 255 255 / 0.33) 10%, transparent 0)
+    repeat center / 15px 15px;
+}
+
+/* dots2 — staggered */
+.imageWrap.dots2::before {
+  background:
+    radial-gradient(circle, rgb(255 255 255 / 0.33) 7%, transparent 0) repeat 10px 10px /
+      20px 20px,
+    radial-gradient(circle, rgb(255 255 255 / 0.33) 7%, transparent 0) repeat 0 0 / 20px
+      20px;
+}
+
+/* dots3 — dots + faint grid */
+.imageWrap.dots3::before {
+  --article-dots-size: 16px;
+  background:
+    radial-gradient(circle, rgb(255 255 255 / 0.2) 15%, transparent 0) repeat
+      calc(50% - var(--article-dots-size) / 2 - 0.5px)
+      calc(50% - var(--article-dots-size) / 2 - 0.5px) / var(--article-dots-size)
+      var(--article-dots-size),
+    conic-gradient(
+        from 270deg at bottom 1px right 1px,
+        transparent 25%,
+        rgb(255 255 255 / 0.067) 0
+      )
+      repeat center / var(--article-dots-size) var(--article-dots-size);
+}
+
+.previewImg {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
