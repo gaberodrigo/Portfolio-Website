@@ -9,7 +9,7 @@ import Cta from "@/features/home/Cta";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-white text-black">
+    <div className="min-h-screen min-w-0 overflow-x-clip bg-white text-black">
       <Navbar />
 
       <main>

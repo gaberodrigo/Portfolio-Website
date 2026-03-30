@@ -14,7 +14,7 @@ export default function Hero() {
           </FadeIn>
 
           <FadeIn delay={0.05} className="mt-5">
-            <h1 className="text-5xl font-bold leading-[0.95] tracking-[-0.04em] sm:text-7xl">
+            <h1 className="text-4xl font-bold leading-[0.95] tracking-[-0.04em] sm:text-5xl md:text-6xl lg:text-7xl">
               High-end work.
               <br />
               Clean execution.

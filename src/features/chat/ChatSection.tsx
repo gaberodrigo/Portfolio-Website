@@ -71,10 +71,10 @@ export default function ChatSection() {
   return (
     <div
       id="chat"
-      className="scroll-mt-24 rounded-2xl border border-neutral-700 bg-neutral-950/35 p-6 shadow-[0_0_0_1px_rgba(255,255,255,0.04),0_0_28px_rgba(255,255,255,0.08)]"
+      className="w-full min-w-0 max-w-full scroll-mt-24 rounded-2xl border border-neutral-700 bg-neutral-950/35 p-4 shadow-[0_0_0_1px_rgba(255,255,255,0.04),0_0_28px_rgba(255,255,255,0.08)] sm:p-6"
     >
-      <div className="flex items-start justify-between gap-6">
-        <div>
+      <div className="flex items-start justify-between gap-4 sm:gap-6">
+        <div className="min-w-0">
           <p className="text-sm font-semibold text-neutral-200">Chatbot (RAG)</p>
           <p className="mt-3 text-sm text-neutral-400">
             Ask questions. Responses come from <span className="font-mono">POST /query</span>.
@@ -84,13 +84,13 @@ export default function ChatSection() {
 
       <div
         ref={messagesScrollRef}
-        className="mt-5 max-h-[280px] space-y-4 overflow-y-auto pr-2"
+        className="mt-5 max-h-[280px] space-y-4 overflow-y-auto overflow-x-hidden pr-2"
       >
         {messages.map((m, idx) => (
           <div
             key={`${m.role}-${idx}`}
             className={[
-              "w-fit max-w-[80%] rounded-xl border px-4 py-3",
+              "w-fit max-w-[85%] break-words rounded-xl border px-4 py-3",
               m.role === "user"
                 ? "ml-auto border-neutral-700 bg-neutral-900"
                 : "border-neutral-800 bg-black/10",
@@ -111,20 +111,20 @@ export default function ChatSection() {
         <label className="sr-only" htmlFor="chatInput">
           Ask a question
         </label>
-        <div className="flex gap-3">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-stretch">
           <input
             id="chatInput"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Ask a question about your work..."
-            className="w-full rounded-xl border border-neutral-800 bg-black/20 px-4 py-3 text-sm text-neutral-100 placeholder:text-neutral-500 outline-none focus:border-neutral-500"
+            className="min-w-0 flex-1 rounded-xl border border-neutral-800 bg-black/20 px-4 py-3 text-sm text-neutral-100 placeholder:text-neutral-500 outline-none focus:border-neutral-500"
             required
             disabled={isLoading}
           />
           <button
             type="submit"
             disabled={isLoading}
-            className="rounded-xl border border-neutral-800 bg-white px-5 py-3 text-sm font-semibold text-black transition-colors hover:bg-neutral-100 disabled:opacity-60"
+            className="shrink-0 rounded-xl border border-neutral-800 bg-white px-5 py-3 text-sm font-semibold text-black transition-colors hover:bg-neutral-100 disabled:opacity-60 sm:w-auto"
           >
             {isLoading ? "Sending..." : "Send"}
           </button>
@@ -133,4 +133,3 @@ export default function ChatSection() {
     </div>
   );
 }
-

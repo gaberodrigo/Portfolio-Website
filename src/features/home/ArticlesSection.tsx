@@ -114,7 +114,7 @@ export default function ArticlesSection() {
     <section id="articles" className="bg-[#F7F7F7] py-24">
       <Container>
         <FadeIn>
-          <div className="flex items-end justify-between gap-6">
+          <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-4">
             <div>
               <h2 className="text-[2.8125rem] font-bold tracking-[-0.03em]">
                 Articles

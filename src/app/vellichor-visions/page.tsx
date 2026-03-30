@@ -31,7 +31,7 @@ const vvServices = [
 
 export default function VellichorVisionsPage() {
   return (
-    <div className="min-h-screen bg-white text-black">
+    <div className="min-h-screen min-w-0 overflow-x-clip bg-white text-black">
       <Navbar />
 
       <main>
@@ -42,7 +42,7 @@ export default function VellichorVisionsPage() {
               <p className="text-xs font-semibold uppercase tracking-widest text-neutral-500">
                 Visual Storytelling
               </p>
-              <h1 className="mt-4 text-5xl font-bold leading-[0.95] tracking-[-0.04em] sm:text-7xl lg:text-8xl">
+              <h1 className="mt-4 text-4xl font-bold leading-[0.95] tracking-[-0.04em] sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl">
                 Vellichor
                 <br />
                 Visions

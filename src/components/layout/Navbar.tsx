@@ -15,9 +15,6 @@ const links = [
   { label: "Chat", href: "#chat" },
 ];
 
-/** Matches `h-20`; hero is "past" the bar when it no longer sits under the sticky header. */
-const NAV_HEIGHT_PX = 80;
-
 export default function Navbar() {
   const [pastHero, setPastHero] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -32,8 +29,10 @@ export default function Navbar() {
     if (!hero) return;
 
     const update = () => {
+      const header = document.querySelector("header");
+      const navH = header?.getBoundingClientRect().height ?? 80;
       const { bottom } = hero.getBoundingClientRect();
-      setPastHero(bottom <= NAV_HEIGHT_PX);
+      setPastHero(bottom <= navH);
     };
 
     update();
@@ -51,19 +50,19 @@ export default function Navbar() {
     <>
       <header
         className={[
-          "sticky top-0 z-50 w-full transition-colors duration-300 ease-in-out",
+          "sticky top-0 z-50 w-full min-w-0 transition-colors duration-300 ease-in-out",
           pastHero
             ? "bg-neutral-50 text-neutral-950 shadow-sm"
             : "bg-black text-white",
         ].join(" ")}
       >
         <Container>
-          <div className="flex h-20 items-center justify-between">
+          <div className="flex h-16 items-center justify-between sm:h-20">
             {/* Logo — scrolls to hero on homepage, navigates home from other pages */}
             <Link
               href={logoHref}
               aria-label="gabriel r — go to homepage"
-              className="transition-opacity hover:opacity-70 focus:outline-none focus-visible:opacity-70"
+              className="min-w-0 shrink transition-opacity hover:opacity-70 focus:outline-none focus-visible:opacity-70"
             >
               <Logo variant={pastHero ? "onLight" : "onDark"} size="xl" />
             </Link>
@@ -75,7 +74,7 @@ export default function Navbar() {
               aria-expanded={menuOpen}
               aria-controls="nav-overlay"
               className={[
-                "flex flex-col items-end justify-center gap-[5px] p-2 transition-opacity hover:opacity-60 focus:outline-none focus-visible:opacity-60",
+                "flex shrink-0 flex-col items-end justify-center gap-[5px] p-2 transition-opacity hover:opacity-60 focus:outline-none focus-visible:opacity-60",
                 pastHero ? "text-neutral-950" : "text-white",
               ].join(" ")}
             >

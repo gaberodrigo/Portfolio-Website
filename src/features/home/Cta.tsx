@@ -5,12 +5,12 @@ import ChatSection from "@/features/chat/ChatSection";
 
 export default function Cta() {
   return (
-    <section id="cta" className="bg-black py-24 text-white">
+    <section id="cta" className="bg-black py-20 text-white sm:py-24">
       <Container>
-        <div className="grid gap-10 md:grid-cols-2 md:items-center">
-          <div>
+        <div className="grid gap-10 lg:grid-cols-2 lg:items-center lg:gap-12">
+          <div className="min-w-0">
             <FadeIn>
-              <h2 className="text-8xl font-bold tracking-[-0.04em]">
+              <h2 className="text-4xl font-bold leading-[1.05] tracking-[-0.04em] sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl">
                 Ready to build something clean?
               </h2>
             </FadeIn>
@@ -35,12 +35,13 @@ export default function Cta() {
             </div>
           </div>
 
-          <FadeIn delay={0.2}>
-            <ChatSection />
-          </FadeIn>
+          <div className="min-w-0">
+            <FadeIn delay={0.2}>
+              <ChatSection />
+            </FadeIn>
+          </div>
         </div>
       </Container>
     </section>
   );
 }
-

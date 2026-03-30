@@ -49,7 +49,7 @@ export default function MenuOverlay({ isOpen, onClose, links }: Props) {
         >
           {/* Top bar — mirrors navbar height, aligned to site container */}
           <Container>
-            <div className="flex h-20 items-center justify-between">
+            <div className="flex h-16 items-center justify-between sm:h-20">
               <span className="text-xs font-semibold uppercase tracking-widest text-neutral-500">
                 Menu
               </span>
