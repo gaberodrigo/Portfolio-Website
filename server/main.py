@@ -2,11 +2,17 @@
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+import os
 
 from shared.config import settings
 from server.api.chat import router as chat_router
 from server.api.upload import router as upload_router
 from shared.schemas import HealthResponse
+
+raw_origins = os.getenv(
+    "ALLOWED_ORIGINS", 
+    "http://localhost:3000,http://127.0.0.1:3000,http://localhost:3001,http://127.0.0.1:3001",
+)
 
 app = FastAPI(title=settings.app_name, version=settings.app_version)
 
