@@ -1,6 +1,7 @@
 # Step 1 — do not commit local env, deps, or build output
 .env
 .env*.local
+.env.local
 .vercel
 .venv
 venv/

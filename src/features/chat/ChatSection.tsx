@@ -4,14 +4,44 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 type ChatMessage = { role: "user" | "assistant"; text: string };
 
-export default function ChatSection() {
-  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
-  const queryUrl = useMemo(() => `${apiBaseUrl}/query`, [apiBaseUrl]);
+type ChatBackend = "bedrock" | "fastapi";
 
-  const [messages, setMessages] = useState<ChatMessage[]>([
+function getChatBackend(): ChatBackend {
+  const v = process.env.NEXT_PUBLIC_CHAT_BACKEND?.toLowerCase().trim();
+  return v === "fastapi" ? "fastapi" : "bedrock";
+}
+
+async function queryFastApi(queryUrl: string, query: string): Promise<string> {
+  const response = await fetch(queryUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ query }),
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    const detail = typeof data?.detail === "string" ? data.detail : String(data);
+    throw new Error(detail);
+  }
+  const assistantText = data.response || data.answer || data.message;
+  if (!assistantText || typeof assistantText !== "string") {
+    throw new Error("Unexpected API response format");
+  }
+  return assistantText;
+}
+
+export default function ChatSection() {
+  const backend = useMemo(() => getChatBackend(), []);
+  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+  const fastApiQueryUrl = useMemo(() => `${apiBaseUrl}/query`, [apiBaseUrl]);
+
+  const [sessionId, setSessionId] = useState<string | undefined>(undefined);
+  const [messages, setMessages] = useState<ChatMessage[]>(() => [
     {
       role: "assistant",
-      text: "Hello! Ask me anything about this portfolio or your project. I’ll answer using your backend’s RAG API.",
+      text:
+        backend === "bedrock"
+          ? "Hello! Ask me anything about this portfolio or your project. I’ll answer using the Bedrock Knowledge Base (with FastAPI fallback if needed)."
+          : "Hello! Ask me anything about this portfolio or your project. I’ll answer using your backend’s RAG API.",
     },
   ]);
   const [input, setInput] = useState("");
@@ -38,24 +68,47 @@ export default function ChatSection() {
     setInput("");
 
     try {
-      const response = await fetch(queryUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query: trimmed }),
-      });
+      if (backend === "fastapi") {
+        const assistantText = await queryFastApi(fastApiQueryUrl, trimmed);
+        setMessages((prev) => [...prev, { role: "assistant", text: assistantText }]);
+      } else {
+        try {
+          const response = await fetch("/api/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message: trimmed, sessionId }),
+          });
 
-      const data = await response.json();
-      if (!response.ok) {
-        const detail = typeof data?.detail === "string" ? data.detail : String(data);
-        throw new Error(detail);
+          let data: Record<string, unknown>;
+          try {
+            data = (await response.json()) as Record<string, unknown>;
+          } catch {
+            throw new Error("Invalid response from /api/chat");
+          }
+
+          if (!response.ok) {
+            const detail =
+              typeof data?.error === "string" ? data.error : "Chat request failed.";
+            throw new Error(detail);
+          }
+
+          if (typeof data.sessionId === "string" && data.sessionId) {
+            setSessionId(data.sessionId);
+          }
+
+          const assistantText = data.answer ?? data.response ?? data.message;
+          if (!assistantText || typeof assistantText !== "string") {
+            throw new Error("Unexpected API response format");
+          }
+
+          setMessages((prev) => [...prev, { role: "assistant", text: assistantText }]);
+        } catch (bedrockErr) {
+          console.error("Bedrock failed, falling back to FastAPI", bedrockErr);
+          setSessionId(undefined);
+          const assistantText = await queryFastApi(fastApiQueryUrl, trimmed);
+          setMessages((prev) => [...prev, { role: "assistant", text: assistantText }]);
+        }
       }
-
-      const assistantText = data.response || data.answer || data.message;
-      if (!assistantText || typeof assistantText !== "string") {
-        throw new Error("Unexpected API response format");
-      }
-
-      setMessages((prev) => [...prev, { role: "assistant", text: assistantText }]);
     } catch (err) {
       const message = err instanceof Error ? err.message : "Unable to complete request.";
       setError(message);
@@ -68,6 +121,19 @@ export default function ChatSection() {
     }
   }
 
+  const endpointHint =
+    backend === "bedrock" ? (
+      <>
+        Primary: <span className="font-mono">POST /api/chat</span> (Bedrock Knowledge Base).
+        If that fails, falls back to <span className="font-mono">POST /query</span> via{" "}
+        <span className="font-mono">NEXT_PUBLIC_API_URL</span>.
+      </>
+    ) : (
+      <>
+        Responses come from <span className="font-mono">POST /query</span> (FastAPI RAG).
+      </>
+    );
+
   return (
     <div
       id="chat"
@@ -77,7 +143,7 @@ export default function ChatSection() {
         <div className="min-w-0">
           <p className="text-sm font-semibold text-neutral-200">Chatbot (RAG)</p>
           <p className="mt-3 text-sm text-neutral-400">
-            Ask questions. Responses come from <span className="font-mono">POST /query</span>.
+            Ask questions. {endpointHint}
           </p>
         </div>
       </div>
