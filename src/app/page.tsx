@@ -14,6 +14,7 @@ export default function Home() {
 
       <main>
         <Hero />
+        <div aria-hidden="true" className="h-3 w-full bg-black" />
         <ServicesGrid />
         <AboutValue />
         <ArticlesSection />

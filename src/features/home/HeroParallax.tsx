@@ -1,0 +1,203 @@
+"use client";
+
+import Image from "next/image";
+import type { MotionValue } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import type { ReactNode } from "react";
+
+type LayerConfig = {
+  key: string;
+  src: string;
+  alt: string;
+  zIndex: number;
+  /**
+   * Vertical movement in pixels at scroll progress 1.
+   * Must map to 0 at progress 0 for pixel-perfect "rest" alignment.
+   */
+  yRangePx: number;
+  /**
+   * Controls how the SVG is fit inside the hero.
+   * Usually keep consistent across all layers to avoid seams.
+   */
+  objectPosition?: string; // CSS object-position, e.g. "50% 100%"
+};
+
+const LAYERS: LayerConfig[] = [
+  // Depth groups (tweak per your extracted artwork)
+  { key: "LayerBackground", src: "/images/articles/LayerBackground.svg", alt: "Sky", zIndex: 0, yRangePx: 0 },
+  { key: "LayerX", src: "/images/articles/Layerx.svg", alt: "Clouds", zIndex: 1, yRangePx: 900 },
+  { key: "Layer9", src: "/images/articles/Layer9.svg", alt: "Far mountains", zIndex: 2, yRangePx: 800 },
+  { key: "Layer8", src: "/images/articles/Layer8.svg", alt: "Mid mountains", zIndex: 3, yRangePx: 700 },
+  { key: "Layer7", src: "/images/articles/Layer7.svg", alt: "Tree line", zIndex: 4, yRangePx: 600 },
+  { key: "Layer6", src: "/images/articles/Layer6.svg", alt: "Foreground detail", zIndex: 5, yRangePx: 500 },
+  { key: "Layer5", src: "/images/articles/Layer5.svg", alt: "Foreground detail", zIndex: 6, yRangePx: 400 },
+  { key: "Layer4", src: "/images/articles/Layer4.svg", alt: "Foreground detail", zIndex: 7, yRangePx: 300 },
+  { key: "Layer3", src: "/images/articles/Layer3.svg", alt: "Foreground detail", zIndex: 8, yRangePx: 200 },
+  { key: "Layer2", src: "/images/articles/Layer2.svg", alt: "Foreground detail", zIndex: 9, yRangePx: 100 },
+  { key: "Layer1", src: "/images/articles/layer1.svg", alt: "Foreground", zIndex: 10, yRangePx: 0 },
+];
+
+// ─── Desktop: full parallax (unchanged logic) ────────────────────────────────
+
+function ParallaxLayer({
+  layer,
+  scrollYProgress,
+}: {
+  layer: LayerConfig;
+  scrollYProgress: MotionValue<number>;
+}) {
+  const y = useTransform(scrollYProgress, [0, 1], [0, layer.yRangePx]);
+
+  return (
+    <motion.div
+      aria-hidden="true"
+      className="absolute inset-0 pointer-events-none will-change-transform"
+      style={{
+        zIndex: layer.zIndex,
+        y,
+      }}
+    >
+      <img
+        src={layer.src}
+        alt=""
+        draggable={false}
+        loading="eager"
+        decoding="async"
+        className="h-full w-full select-none object-cover"
+        style={{
+          // Anchor from bottom so ground/cliffs line up consistently across layers.
+          objectPosition: layer.objectPosition ?? "50% 100%",
+        }}
+      />
+    </motion.div>
+  );
+}
+
+function ParallaxHeroDesktop({
+  id,
+  className,
+  children,
+}: {
+  id?: string;
+  className?: string;
+  children?: ReactNode;
+}) {
+  const heroRef = useRef<HTMLElement | null>(null);
+
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    // progress = 0 when hero top aligns with viewport top
+    offset: ["start start", "end start"],
+  });
+
+  return (
+    <section
+      id={id}
+      ref={heroRef}
+      className={[
+        "relative h-screen w-full overflow-hidden overflow-x-hidden",
+        // Base color to avoid edge gaps. Layers should be transparent-aware.
+        "bg-[#F7F7F7]",
+        className ?? "",
+      ].join(" ")}
+      aria-label="Landing hero parallax"
+    >
+      {LAYERS.map((layer) => (
+        <ParallaxLayer key={layer.key} layer={layer} scrollYProgress={scrollYProgress} />
+      ))}
+
+      {/* Overlay content stays above parallax layers */}
+      <div className="relative z-10 h-full">{children}</div>
+    </section>
+  );
+}
+
+// ─── Mobile: static image fallback (no scroll listeners, no transforms) ──────
+
+function StaticHero({
+  id,
+  className,
+  children,
+}: {
+  id?: string;
+  className?: string;
+  children?: ReactNode;
+}) {
+  return (
+    <section
+      id={id}
+      className={[
+        "relative h-screen w-full overflow-hidden overflow-x-hidden",
+        "bg-[#F7F7F7]",
+        className ?? "",
+      ].join(" ")}
+      aria-label="Landing hero"
+    >
+      {/* Fade-in so the static image doesn't feel abrupt */}
+      <motion.div
+        className="absolute inset-0"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.7, ease: "easeOut" }}
+        aria-hidden="true"
+      >
+        <Image
+          src="/images/articles/ParalaxBackground.jpg"
+          alt=""
+          fill
+          priority
+          className="object-cover object-bottom select-none"
+        />
+      </motion.div>
+
+      {/* Overlay content stays above the image */}
+      <div className="relative z-10 h-full">{children}</div>
+    </section>
+  );
+}
+
+// ─── Main export: switches between static and parallax based on screen width ──
+
+export default function HeroParallax({
+  id,
+  className,
+  children,
+}: {
+  id?: string;
+  className?: string;
+  children?: ReactNode;
+}) {
+  /**
+   * null  → not yet hydrated (SSR safe — avoids hydration mismatch)
+   * true  → mobile (<768 px)
+   * false → desktop (≥768 px)
+   *
+   * We treat null as "mobile" so the lighter StaticHero is the SSR default.
+   * Desktop switches to ParallaxHeroDesktop only after client-side hydration,
+   * which keeps the parallax scroll listeners off mobile entirely.
+   */
+  const [isMobile, setIsMobile] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
+  // Show static fallback on mobile AND during SSR/hydration (isMobile === null)
+  if (isMobile !== false) {
+    return (
+      <StaticHero id={id} className={className}>
+        {children}
+      </StaticHero>
+    );
+  }
+
+  return (
+    <ParallaxHeroDesktop id={id} className={className}>
+      {children}
+    </ParallaxHeroDesktop>
+  );
+}
