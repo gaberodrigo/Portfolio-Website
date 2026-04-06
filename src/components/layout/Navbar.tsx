@@ -1,21 +1,25 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Container from "@/components/ui/Container";
 import Logo from "@/components/ui/Logo";
 import MenuOverlay from "@/components/layout/MenuOverlay";
-
-const links = [
-  { label: "Services", href: "#services" },
-  { label: "About", href: "#about" },
-  { label: "Articles", href: "#articles" },
-  { label: "Testimonials", href: "#testimonials" },
-  { label: "Chat", href: "#chat" },
-];
+import { useChatContext } from "@/features/chat/ChatProvider";
 
 export default function Navbar() {
+  const { openChat } = useChatContext();
+  const links = useMemo(
+    () => [
+      { label: "Services", href: "#services" },
+      { label: "About", href: "#about" },
+      { label: "Articles", href: "#articles" },
+      { label: "Testimonials", href: "#testimonials" },
+      { label: "Chat", href: "#", onClick: openChat },
+    ],
+    [openChat],
+  );
   const [pastHero, setPastHero] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();

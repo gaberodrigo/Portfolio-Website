@@ -47,7 +47,7 @@ function ArticleCard({ article }: { article: Article }) {
       <p className="mt-4 text-xs font-semibold uppercase tracking-wider text-neutral-500">
         {article.source}
       </p>
-      <h3 className="mt-2 text-lg font-semibold leading-snug text-neutral-950 group-hover:underline">
+      <h3 className="mt-2 text-lg font-semibold leading-snug text-neutral-950">
         {article.title}
       </h3>
     </a>

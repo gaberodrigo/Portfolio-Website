@@ -18,6 +18,14 @@ export default function Footer() {
               >
                 +1 (480) 334-3330
               </a>
+              <a
+                className="text-neutral-700 underline-offset-4 transition-colors hover:text-neutral-950 hover:underline"
+                href="https://github.com/gaberodrigo"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                GitHub
+              </a>
             </div>
           </div>
           <p className="text-sm text-neutral-500 sm:max-w-md sm:text-right">

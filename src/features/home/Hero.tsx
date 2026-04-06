@@ -1,6 +1,7 @@
 import Container from "@/components/ui/Container";
 import Button from "@/components/ui/Button";
 import FadeIn from "@/components/motion/FadeIn";
+import ChatOpenButton from "@/components/chat/ChatOpenButton";
 import HeroParallax from "./HeroParallax";
 
 export default function Hero() {
@@ -34,9 +35,7 @@ export default function Hero() {
               </Button>
             </FadeIn>
             <FadeIn delay={0.2}>
-              <Button variant="outline" href="#chat" ariaLabel="Jump to chat">
-                Chat
-              </Button>
+              <ChatOpenButton variant="outline" ariaLabel="Open chat" />
             </FadeIn>
           </div>
         </div>

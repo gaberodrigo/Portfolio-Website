@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Container from "@/components/ui/Container";
 
-type NavLink = { label: string; href: string };
+type NavLink = { label: string; href: string; onClick?: () => void };
 
 type Props = {
   isOpen: boolean;
@@ -81,23 +81,44 @@ export default function MenuOverlay({ isOpen, onClose, links }: Props) {
             aria-label="Overlay navigation"
           >
             <Container>
-              {links.map((link, i) => (
-                <motion.a
-                  key={link.href}
-                  href={link.href}
-                  initial={{ opacity: 0, x: -16 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{
-                    delay: 0.06 + i * 0.07,
-                    duration: 0.4,
-                    ease: [0.22, 1, 0.36, 1],
-                  }}
-                  onClick={onClose}
-                  className="block py-3 text-4xl font-bold leading-none text-white transition-opacity hover:opacity-30 focus:outline-none focus-visible:opacity-30 sm:text-5xl lg:text-6xl"
-                >
-                  {link.label}
-                </motion.a>
-              ))}
+              {links.map((link, i) =>
+                link.onClick ? (
+                  <motion.button
+                    key={link.label}
+                    type="button"
+                    initial={{ opacity: 0, x: -16 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{
+                      delay: 0.06 + i * 0.07,
+                      duration: 0.4,
+                      ease: [0.22, 1, 0.36, 1],
+                    }}
+                    onClick={() => {
+                      link.onClick?.();
+                      onClose();
+                    }}
+                    className="block w-full py-3 text-left text-4xl font-bold leading-none text-white transition-opacity hover:opacity-30 focus:outline-none focus-visible:opacity-30 sm:text-5xl lg:text-6xl"
+                  >
+                    {link.label}
+                  </motion.button>
+                ) : (
+                  <motion.a
+                    key={link.href}
+                    href={link.href}
+                    initial={{ opacity: 0, x: -16 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{
+                      delay: 0.06 + i * 0.07,
+                      duration: 0.4,
+                      ease: [0.22, 1, 0.36, 1],
+                    }}
+                    onClick={onClose}
+                    className="block py-3 text-4xl font-bold leading-none text-white transition-opacity hover:opacity-30 focus:outline-none focus-visible:opacity-30 sm:text-5xl lg:text-6xl"
+                  >
+                    {link.label}
+                  </motion.a>
+                ),
+              )}
             </Container>
           </nav>
 
