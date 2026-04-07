@@ -28,8 +28,17 @@ export default function FloatingChat() {
   const reduceMotion = useReducedMotion();
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [showLauncher, setShowLauncher] = useState(true);
+  const [narrowViewport, setNarrowViewport] = useState(false);
   const launcherTimerRef = useRef<number | null>(null);
   const hadOpenedRef = useRef(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const apply = () => setNarrowViewport(mq.matches);
+    apply();
+    mq.addEventListener("change", apply);
+    return () => mq.removeEventListener("change", apply);
+  }, []);
 
   useEffect(() => {
     if (isOpen) {
@@ -79,16 +88,37 @@ export default function FloatingChat() {
     });
   }
 
+  const launcherMotion = reduceMotion
+    ? false
+    : narrowViewport
+      ? { opacity: 0 }
+      : { opacity: 0, scale: 0.92 };
+  const launcherAnimate = narrowViewport ? { opacity: 1 } : { opacity: 1, scale: 1 };
+
+  const panelEnter = reduceMotion
+    ? { opacity: 1 }
+    : narrowViewport
+      ? { opacity: 0, y: 12 }
+      : { opacity: 0, scale: 0.92, y: 10 };
+  const panelActive = narrowViewport
+    ? { opacity: 1, y: 0 }
+    : { opacity: 1, scale: 1, y: 0 };
+  const panelExit = reduceMotion
+    ? { opacity: 0 }
+    : narrowViewport
+      ? { opacity: 0, y: 12 }
+      : { opacity: 0, scale: 0.92, y: 10 };
+
   return (
-    <div className="pointer-events-none fixed bottom-4 right-4 z-[100] flex flex-col items-end sm:bottom-6 sm:right-6">
-      <div className="pointer-events-auto flex flex-col items-end gap-3">
+    <div className="pointer-events-none fixed inset-x-0 bottom-0 z-[100] flex flex-col items-end px-4 pb-4 sm:px-6 sm:pb-6">
+      <div className="pointer-events-auto flex w-full max-w-[360px] flex-col items-end gap-3">
         {showLauncher && !isOpen ? (
           <motion.button
             key="launcher"
             type="button"
             aria-label="Open chat"
-            initial={reduceMotion ? false : { opacity: 0, scale: 0.92 }}
-            animate={{ opacity: 1, scale: 1 }}
+            initial={launcherMotion}
+            animate={launcherAnimate}
             transition={{ duration: 0.18, ease: "easeOut" }}
             onClick={handleLauncherClick}
             className="flex h-14 w-14 items-center justify-center rounded-full border border-neutral-700 bg-neutral-950 text-white shadow-[0_8px_30px_rgba(0,0,0,0.35)] transition-colors hover:bg-neutral-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
@@ -116,20 +146,16 @@ export default function FloatingChat() {
               role="dialog"
               aria-modal="true"
               aria-labelledby="floating-chat-title"
-              initial={
-                reduceMotion
-                  ? { opacity: 1 }
-                  : { opacity: 0, scale: 0.92, y: 10 }
-              }
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={
-                reduceMotion
-                  ? { opacity: 0 }
-                  : { opacity: 0, scale: 0.92, y: 10 }
-              }
+              initial={panelEnter}
+              animate={panelActive}
+              exit={panelExit}
               transition={panelTransition}
-              style={{ transformOrigin: "bottom right" }}
-              className="flex h-[min(560px,calc(100vh-5.5rem))] w-[min(360px,calc(100vw-2rem))] origin-bottom-right flex-col overflow-hidden rounded-2xl border border-neutral-700 bg-neutral-950/[0.76] text-neutral-100 shadow-[0_8px_40px_rgba(0,0,0,0.45)] backdrop-blur-sm"
+              style={
+                narrowViewport
+                  ? undefined
+                  : { transformOrigin: "bottom right" }
+              }
+              className="flex h-[min(560px,calc(100dvh-5.5rem))] w-full max-w-[360px] flex-col overflow-hidden rounded-2xl border border-neutral-700 bg-neutral-950/[0.76] text-neutral-100 shadow-[0_8px_40px_rgba(0,0,0,0.45)] backdrop-blur-sm"
             >
               <div className="flex items-start justify-between gap-3 border-b border-neutral-800 px-4 py-3 sm:px-5">
                 <div className="min-w-0">

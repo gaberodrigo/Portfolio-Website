@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import type { MotionValue } from "framer-motion";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
@@ -113,7 +112,10 @@ function ParallaxHeroDesktop({
   );
 }
 
-// ─── Mobile: static image fallback (no scroll listeners, no transforms) ──────
+// ─── Mobile / small viewports: same artwork as desktop, no scroll-driven motion ─
+// Uses the same SVG stack as ParallaxHeroDesktop (not the separate JPG), so we do
+// not depend on ParalaxBackground.jpg, which is easy to omit from deploys and breaks
+// Next/Image on some devices when missing or mis-cached.
 
 function StaticHero({
   id,
@@ -134,24 +136,35 @@ function StaticHero({
       ].join(" ")}
       aria-label="Landing hero"
     >
-      {/* Fade-in so the static image doesn't feel abrupt */}
       <motion.div
-        className="absolute inset-0"
+        className="absolute inset-0 z-0"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.7, ease: "easeOut" }}
         aria-hidden="true"
       >
-        <Image
-          src="/images/articles/ParalaxBackground.jpg"
-          alt=""
-          fill
-          priority
-          className="object-cover object-bottom select-none"
-        />
+        {LAYERS.map((layer) => (
+          <div
+            key={layer.key}
+            className="absolute inset-0 pointer-events-none"
+            style={{ zIndex: layer.zIndex }}
+          >
+            <img
+              src={layer.src}
+              alt=""
+              draggable={false}
+              loading="eager"
+              decoding="async"
+              fetchPriority="high"
+              className="h-full w-full select-none object-cover"
+              style={{
+                objectPosition: layer.objectPosition ?? "50% 100%",
+              }}
+            />
+          </div>
+        ))}
       </motion.div>
 
-      {/* Overlay content stays above the image */}
       <div className="relative z-10 h-full">{children}</div>
     </section>
   );
@@ -170,17 +183,17 @@ export default function HeroParallax({
 }) {
   /**
    * null  → not yet hydrated (SSR safe — avoids hydration mismatch)
-   * true  → mobile (<768 px)
-   * false → desktop (≥768 px)
+   * true  → small screens (<1024 px, Tailwind `lg`)
+   * false → desktop (≥1024 px)
    *
-   * We treat null as "mobile" so the lighter StaticHero is the SSR default.
+   * We treat null as "small viewport" so the lighter StaticHero is the SSR default.
    * Desktop switches to ParallaxHeroDesktop only after client-side hydration,
-   * which keeps the parallax scroll listeners off mobile entirely.
+   * which keeps parallax scroll listeners off phones and tablets.
    */
   const [isMobile, setIsMobile] = useState<boolean | null>(null);
 
   useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 768);
+    const check = () => setIsMobile(window.innerWidth < 1024);
     check();
     window.addEventListener("resize", check);
     return () => window.removeEventListener("resize", check);
