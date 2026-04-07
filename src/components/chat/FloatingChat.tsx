@@ -110,8 +110,17 @@ export default function FloatingChat() {
       : { opacity: 0, scale: 0.92, y: 10 };
 
   return (
-    <div className="pointer-events-none fixed inset-x-0 bottom-0 z-[100] flex flex-col items-end px-4 pb-4 sm:px-6 sm:pb-6">
-      <div className="pointer-events-auto flex w-full max-w-[360px] flex-col items-end gap-3">
+    <div
+      className={[
+        "pointer-events-none fixed z-[100] flex flex-col gap-3 pb-4",
+        // Mobile: left/right insets + width from insets (not 100% + padding) — avoids iOS horizontal
+        // jump when the keyboard changes the visual/layout viewport.
+        "bottom-0 left-2 right-2 w-auto",
+        // Desktop: same bottom-right rail as before (full-width shell, column capped at 360px).
+        "sm:inset-x-0 sm:bottom-0 sm:px-6 sm:pb-6",
+      ].join(" ")}
+    >
+      <div className="pointer-events-auto flex w-full min-w-0 max-w-full flex-col items-stretch gap-3 sm:ml-auto sm:max-w-[360px] sm:items-end">
         {showLauncher && !isOpen ? (
           <motion.button
             key="launcher"
@@ -121,7 +130,7 @@ export default function FloatingChat() {
             animate={launcherAnimate}
             transition={{ duration: 0.18, ease: "easeOut" }}
             onClick={handleLauncherClick}
-            className="flex h-14 w-14 items-center justify-center rounded-full border border-neutral-700 bg-neutral-950 text-white shadow-[0_8px_30px_rgba(0,0,0,0.35)] transition-colors hover:bg-neutral-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
+            className="flex h-14 w-14 shrink-0 items-center justify-center self-end rounded-full border border-neutral-700 bg-neutral-950 text-white shadow-[0_8px_30px_rgba(0,0,0,0.35)] transition-colors hover:bg-neutral-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
           >
             <svg
               width="22"
@@ -155,7 +164,7 @@ export default function FloatingChat() {
                   ? undefined
                   : { transformOrigin: "bottom right" }
               }
-              className="flex h-[min(560px,calc(100dvh-5.5rem))] w-full max-w-[360px] flex-col overflow-hidden rounded-2xl border border-neutral-700 bg-neutral-950/[0.76] text-neutral-100 shadow-[0_8px_40px_rgba(0,0,0,0.45)] backdrop-blur-sm"
+              className="flex h-[min(560px,calc(100dvh-5.5rem))] w-full min-w-0 max-w-full flex-col overflow-hidden rounded-2xl border border-neutral-700 bg-neutral-950/[0.76] text-neutral-100 shadow-[0_8px_40px_rgba(0,0,0,0.45)] backdrop-blur-sm sm:max-w-[360px]"
             >
               <div className="flex items-start justify-between gap-3 border-b border-neutral-800 px-4 py-3 sm:px-5">
                 <div className="min-w-0">

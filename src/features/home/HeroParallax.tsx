@@ -2,8 +2,10 @@
 
 import type { MotionValue } from "framer-motion";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import type { ReactNode } from "react";
+
+import { useMediaQuery } from "@/lib/useMediaQuery";
 
 type LayerConfig = {
   key: string;
@@ -170,7 +172,10 @@ function StaticHero({
   );
 }
 
-// ─── Main export: switches between static and parallax based on screen width ──
+// ─── Main export: static hero vs scroll-driven parallax (media queries, not width) ──
+
+/** Touch-primary devices, or layouts below Tailwind `lg` — evaluated via matchMedia. */
+const PARALLAX_DISABLED_QUERY = "(pointer: coarse), (max-width: 1023px)";
 
 export default function HeroParallax({
   id,
@@ -182,25 +187,18 @@ export default function HeroParallax({
   children?: ReactNode;
 }) {
   /**
-   * null  → not yet hydrated (SSR safe — avoids hydration mismatch)
-   * true  → small screens (<1024 px, Tailwind `lg`)
-   * false → desktop (≥1024 px)
+   * null  → not yet hydrated (SSR safe)
+   * true  → disable parallax (coarse pointer and/or narrow layout per CSS)
+   * false → desktop: full parallax
    *
-   * We treat null as "small viewport" so the lighter StaticHero is the SSR default.
-   * Desktop switches to ParallaxHeroDesktop only after client-side hydration,
-   * which keeps parallax scroll listeners off phones and tablets.
+   * We use matchMedia instead of window.innerWidth so behavior matches real CSS
+   * (Safari / iOS / DPR / viewport timing), and `(pointer: coarse)` catches iPhones
+   * even when the layout viewport is wide (e.g. “Request Desktop Website”).
    */
-  const [isMobile, setIsMobile] = useState<boolean | null>(null);
+  const parallaxDisabled = useMediaQuery(PARALLAX_DISABLED_QUERY);
 
-  useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 1024);
-    check();
-    window.addEventListener("resize", check);
-    return () => window.removeEventListener("resize", check);
-  }, []);
-
-  // Show static fallback on mobile AND during SSR/hydration (isMobile === null)
-  if (isMobile !== false) {
+  // Static fallback while unknown, on touch/narrow viewports, or when query matches
+  if (parallaxDisabled !== false) {
     return (
       <StaticHero id={id} className={className}>
         {children}
