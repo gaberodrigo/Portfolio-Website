@@ -26,6 +26,13 @@ export default function Footer() {
               >
                 GitHub
               </a>
+              <a
+                className="text-neutral-700 underline-offset-4 transition-colors hover:text-neutral-950 hover:underline"
+                href="/documents/Gabriel-Rodriguez-Resume.docx"
+                download="Gabriel Rodriguez Resume.docx"
+              >
+                Gabriel Rodriguez Resume
+              </a>
             </div>
           </div>
           <p className="text-sm text-neutral-500 sm:max-w-md sm:text-right">
