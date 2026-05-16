@@ -28,8 +28,8 @@ export default function Footer() {
               </a>
               <a
                 className="text-neutral-700 underline-offset-4 transition-colors hover:text-neutral-950 hover:underline"
-                href="/documents/Gabriel-Rodriguez-Resume.docx"
-                download="Gabriel Rodriguez Resume.docx"
+                href="/documents/Gabriel-Rodriguez-Resume.pdf"
+                download="Gabriel Rodriguez Resume.pdf"
               >
                 Gabriel Rodriguez Resume
               </a>
